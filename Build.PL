@@ -1,6 +1,12 @@
+use 5.006;
 use strict;
 use warnings;
 use Module::Build;
+
+if ($^O eq 'MSWin32') {
+	print "No support for OS\n";
+	exit;
+}
 
 my $builder = Module::Build->new(
 	module_name         => 'Signal::Mask',
