@@ -24,6 +24,7 @@ my $builder = Module::Build->new(
 		perl            => 5.006,
 		'Const::Fast'   => 0,
 		'IPC::Signal'   => 0,
+		'Thread::SigMask' => 0.002,
 	},
 	add_to_cleanup      => [ 'Signal-Mask-*' ],
 	create_makefile_pl  => 'traditional',

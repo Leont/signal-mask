@@ -5,7 +5,8 @@ use warnings FATAL => 'all';
 
 our $VERSION = '0.001';
 
-use POSIX qw/sigprocmask SIG_BLOCK SIG_UNBLOCK SIG_SETMASK/;
+use POSIX qw/SIG_BLOCK SIG_UNBLOCK SIG_SETMASK/;
+use Thread::SigMask 'sigmask';
 use IPC::Signal qw/sig_num sig_name/;
 use Carp qw/croak/;
 use Const::Fast;
@@ -36,7 +37,7 @@ sub TIEHASH {
 sub _get_status {
 	my ($self, $num) = @_;
 	my $mask = POSIX::SigSet->new;
-	sigprocmask(SIG_BLOCK, POSIX::SigSet->new(), $mask);
+	sigmask(SIG_BLOCK, POSIX::SigSet->new(), $mask);
 	return $mask->ismember($num);
 }
 
@@ -49,7 +50,7 @@ sub _block_signal {
 	my ($self, $key) = @_;
 	my $num = sig_num($key);
 	croak "No such signal '$key'" if not defined $num;
-	sigprocmask(SIG_BLOCK, POSIX::SigSet->new($num)) or croak "Couldn't block signal: $!";
+	sigmask(SIG_BLOCK, POSIX::SigSet->new($num)) or croak "Couldn't block signal: $!";
 	return;
 }
 
@@ -57,7 +58,7 @@ sub _unblock_signal {
 	my ($self, $key) = @_;
 	my $num = sig_num($key);
 	croak "No such signal '$key'" if not defined $num;
-	sigprocmask(SIG_UNBLOCK, POSIX::SigSet->new($num)) or croak "Couldn't unblock signal: $!";
+	sigmask(SIG_UNBLOCK, POSIX::SigSet->new($num)) or croak "Couldn't unblock signal: $!";
 	return;
 }
 
@@ -80,7 +81,7 @@ sub DELETE {
 
 sub CLEAR {
 	my ($self) = @_;
-	sigprocmask(SIG_SETMASK, POSIX::SigSet->new());
+	sigmask(SIG_SETMASK, POSIX::SigSet->new());
 	return;
 }
 
