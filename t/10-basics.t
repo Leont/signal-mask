@@ -1,7 +1,7 @@
 #!perl -T
 
 use Test::More tests => 11;
-use Signal::Mask;
+use Signal::Mask 'SIG_MASK';
 our %SIG_MASK;
 use POSIX qw/SIGUSR1 SIGUSR2/;
 
@@ -29,5 +29,5 @@ is $counter2, 0, 'Counter2 is still 0';
 	is $counter2, 1, 'Counter2 is now 1';
 }
 
-is $counter1, 2, 'Counter is 2 now';
-is $counter2, 1, 'Counter is still 1';
+is $counter1, 2, 'Counter1 is 2 now';
+is $counter2, 1, 'Counter2 is still 1';

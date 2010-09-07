@@ -14,11 +14,12 @@ our %SIG_MASK;
 
 sub import {
 	my ($class, $name) = @_;
-	$name ||= 'SIG_MASK';
-	$name =~ s/ \A % //xm;
-	my $caller = caller;
-	no strict 'refs';
-	*{"$caller\::$name"} = \%SIG_MASK;
+	if (defined $name) {
+		$name =~ s/ \A % //xm;
+		my $caller = caller;
+		no strict 'refs';
+		*{"$caller\::$name"} = \%SIG_MASK;
+	}
 	return;
 }
 
@@ -124,7 +125,7 @@ __END__
 
 =head1 NAME
 
-Signal::Mask - Signal Masks made easy
+Signal::Mask - Signal masks made easy
 
 =head1 VERSION
 
@@ -134,17 +135,17 @@ Version 0.001
 
 Signal::Mask is an abstraction around your process's signal mask. It is used to fetch and/or change the signal mask of the calling thread.  The signal mask is the set of signals whose delivery is currently blocked for the caller.
 
- use Signal::Mask;
+ use Signal::Mask 'SIG_MASK';
  
  {
      local $SIG_MASK{INT} = 1;
-	 do_something;
+     do_something();
  }
- #signal gets postponed until now
+ #signal delivery gets postponed until now
 
 =head1 EXPORT
 
-This module exports a B<HASH>. By default it's called %SIG_MASK, but it's name can be set on import. Any true value for a hash key will correspond with that signal being masked.
+When importation is given an argument, this module exports a B<HASH> by that name. It can also be accessed as %Signal::Mask::SIG_MASK. Any true value for a hash key will correspond with that signal being masked.
 
 =head1 AUTHOR
 
