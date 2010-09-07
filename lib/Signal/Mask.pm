@@ -96,13 +96,17 @@ sub FIRSTKEY {
 
 sub NEXTKEY {
 	my $self = shift;
-	if ($self->{iterator} < $sig_max) {
+	if ($self->{iterator} <= $sig_max) {
 		my $num = $self->{iterator}++;
 		return wantarray ? (sig_name($num) => $self->_get_status($num)) : sig_name($num);
 	}
 	else {
 		return;
 	}
+}
+
+sub SCALAR {
+	return $sig_max;
 }
 
 sub UNTIE {
