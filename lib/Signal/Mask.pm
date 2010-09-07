@@ -35,7 +35,7 @@ sub TIEHASH {
 sub _get_status {
 	my ($self, $num) = @_;
 	my $mask = POSIX::SigSet->new;
-	sigprocmask(SIG_BLOCK, undef, $mask);
+	sigprocmask(SIG_BLOCK, POSIX::SigSet->new(), $mask);
 	return $mask->ismember($num);
 }
 
