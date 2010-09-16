@@ -1,17 +1,16 @@
-package Signal::Mask;
+package Signal::Pending;
 
 use strict;
 use warnings FATAL => 'all';
 
 our $VERSION = '0.002';
 
-use POSIX qw/SIG_BLOCK SIG_UNBLOCK SIG_SETMASK/;
-use Thread::SigMask 'sigmask';
+use POSIX qw/sigpending/;
 use IPC::Signal qw/sig_num sig_name/;
 use Carp qw/croak/;
 use Const::Fast;
 
-our %SIG_MASK;
+our %SIG_PENDING;
 
 sub import {
 	my ($class, $name) = @_;
@@ -19,14 +18,14 @@ sub import {
 		$name =~ s/ \A % //xm;
 		my $caller = caller;
 		no strict 'refs';
-		*{"$caller\::$name"} = \%SIG_MASK;
+		*{"$caller\::$name"} = \%SIG_PENDING;
 	}
 	return;
 }
 
 const my $sig_max => defined &POSIX::SIGRTMAX ? &POSIX::SIGRTMAX : 32;
 
-tie %SIG_MASK, __PACKAGE__;
+tie %SIG_PENDING, __PACKAGE__;
 
 sub TIEHASH {
 	my $class = shift;
@@ -37,7 +36,7 @@ sub TIEHASH {
 sub _get_status {
 	my ($self, $num) = @_;
 	my $mask = POSIX::SigSet->new;
-	sigmask(SIG_BLOCK, POSIX::SigSet->new(), $mask);
+	sigpending($mask);
 	return $mask->ismember($num);
 }
 
@@ -46,43 +45,19 @@ sub FETCH {
 	return $self->_get_status(sig_num($key));
 }
 
-sub _block_signal {
-	my ($self, $key) = @_;
-	my $num = sig_num($key);
-	croak "No such signal '$key'" if not defined $num;
-	sigmask(SIG_BLOCK, POSIX::SigSet->new($num)) or croak "Couldn't block signal: $!";
-	return;
-}
-
-sub _unblock_signal {
-	my ($self, $key) = @_;
-	my $num = sig_num($key);
-	croak "No such signal '$key'" if not defined $num;
-	sigmask(SIG_UNBLOCK, POSIX::SigSet->new($num)) or croak "Couldn't unblock signal: $!";
-	return;
-}
-
 sub STORE {
 	my ($self, $key, $value) = @_;
-	if ($value) {
-		$self->_block_signal($key);
-	}
-	else {
-		$self->_unblock_signal($key);
-	}
-	return;
+	croak 'Can\'t assign to %SIG_PENDING';
 }
 
 sub DELETE {
 	my ($self, $key) = @_;
-	$self->STORE($key, 0);
-	return;
+	croak 'Can\'t delete from %SIG_PENDING';
 }
 
 sub CLEAR {
 	my ($self) = @_;
-	sigmask(SIG_SETMASK, POSIX::SigSet->new());
-	return;
+	croak 'Can\'t clear %SIG_PENDING';
 }
 
 sub EXISTS {
@@ -112,9 +87,6 @@ sub SCALAR {
 }
 
 sub UNTIE {
-	my $self = shift;
-	$self->CLEAR;
-	return;
 }
 
 sub DESTROY {
@@ -126,7 +98,7 @@ __END__
 
 =head1 NAME
 
-Signal::Mask - Signal masks made easy
+Signal::Pending - Signal pending status made easy
 
 =head1 VERSION
 
@@ -134,19 +106,22 @@ Version 0.002
 
 =head1 SYNOPSIS
 
-Signal::Mask is an abstraction around your process or thread signal mask. It is used to fetch and/or change the signal mask of the calling process or thread. The signal mask is the set of signals whose delivery is currently blocked for the caller.
+Signal::Pending is an abstraction around your process'/thread's pending signals. It can be used in combination with signal masks to handle signals in a controlled manner.
 
  use Signal::Mask 'SIG_MASK';
+ use Signal::Pending 'SIG_PENDING';
  
  {
      local $SIG_MASK{INT} = 1;
-     do_something();
+     do {
+		 something();
+     } while (not $SIG_PENDING{INT})
  }
  #signal delivery gets postponed until now
 
 =head1 EXPORT
 
-When importation is given an argument, this module exports a B<HASH> by that name. It can also be accessed as %Signal::Mask::SIG_MASK. Any true value for a hash entry will correspond with that signal being masked.
+When importation is given an argument, this module exports a B<HASH> by that name. It can also be accessed as %Signal::Pending::SIG_PENDING. Any true value for a hash entry will correspond with that signal awaiting being handled.
 
 =head1 AUTHOR
 
@@ -162,7 +137,7 @@ automatically be notified of progress on your bug as I make changes.
 
 You can find documentation for this module with the perldoc command.
 
-    perldoc Signal::Mask
+    perldoc Signal::Pending
 
 You can also look for information at:
 
