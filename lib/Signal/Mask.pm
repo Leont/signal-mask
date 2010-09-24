@@ -108,7 +108,10 @@ sub NEXTKEY {
 }
 
 sub SCALAR {
-	return $sig_max;
+	my $self = shift;
+	my $mask = POSIX::SigSet->new;
+	sigmask(SIG_BLOCK, POSIX::SigSet->new(), $mask);
+	return scalar grep { $mask->ismember($_) } 1 .. $sig_max;
 }
 
 sub UNTIE {
