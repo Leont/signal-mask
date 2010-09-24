@@ -3,7 +3,7 @@ package Signal::Mask;
 use strict;
 use warnings FATAL => 'all';
 
-our $VERSION = '0.002';
+our $VERSION = '0.003';
 
 use POSIX qw/SIG_BLOCK SIG_UNBLOCK SIG_SETMASK/;
 use Thread::SigMask 'sigmask';
@@ -133,7 +133,7 @@ Signal::Mask - Signal masks made easy
 
 =head1 VERSION
 
-Version 0.002
+Version 0.003
 
 =head1 SYNOPSIS
 

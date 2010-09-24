@@ -1,5 +1,9 @@
 Revision history for Signal-Mask
 
+0.003   24-09-2010
+        Added Signal::Pending
+        Made scalar values of the tied hashed more meaningful
+
 0.002   07-09-2010
         Don't export anything by default
         Use thread specific signal masks
