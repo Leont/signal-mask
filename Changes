@@ -1,5 +1,8 @@
 Revision history for Signal-Mask
 
+0.004   25-09-2010
+        Fixed up MANIFEST
+
 0.003   24-09-2010
         Added Signal::Pending
         Made scalar values of the tied hashed more meaningful

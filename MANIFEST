@@ -1,6 +1,8 @@
 Build.PL
 Changes
 lib/Signal/Mask.pm
+lib/Signal/Pending.pm
+LICENSE
 Makefile.PL
 MANIFEST
 META.yml

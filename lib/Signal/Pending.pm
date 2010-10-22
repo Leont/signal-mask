@@ -3,7 +3,7 @@ package Signal::Pending;
 use strict;
 use warnings FATAL => 'all';
 
-our $VERSION = '0.003';
+our $VERSION = '0.004';
 
 use POSIX qw/sigpending/;
 use IPC::Signal qw/sig_num sig_name/;
@@ -105,7 +105,7 @@ Signal::Pending - Signal pending status made easy
 
 =head1 VERSION
 
-Version 0.003
+Version 0.004
 
 =head1 SYNOPSIS
 

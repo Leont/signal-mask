@@ -29,6 +29,12 @@ my $builder = Module::Build->new(
 	add_to_cleanup      => [ 'Signal-Mask-*' ],
 	create_makefile_pl  => 'traditional',
 	sign                => 1,
+	meta_merge          => {
+		resources       => {
+			bugtracker  => 'http://rt.cpan.org/NoAuth/Bugs.html?Dist=Signal::Mask',
+			repository  => 'http://github.com/Leont/signal-mask'
+		}
+	},
 );
 
 $builder->create_build_script();
