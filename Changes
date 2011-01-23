@@ -1,6 +1,8 @@
 Revision history for Signal-Mask
 
 {{$NEXT}}
+
+0.005     2011-01-24 00:21:18 Europe/Amsterdam
          BACKWARDS COMPATIBILTIY BREAK: changed exported hashes to global hashes
 
 0.004    25-09-2010
