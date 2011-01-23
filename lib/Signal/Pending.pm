@@ -3,27 +3,15 @@ package Signal::Pending;
 use strict;
 use warnings FATAL => 'all';
 
+use Config;
 use POSIX qw/sigpending/;
 use IPC::Signal qw/sig_num sig_name/;
 use Carp qw/croak/;
 use Const::Fast;
 
-our %SIG_PENDING;
+const my $sig_max => $Config{sig_count} - 1;
 
-sub import {
-	my ($class, $name) = @_;
-	if (defined $name) {
-		$name =~ s/ \A % //xm;
-		my $caller = caller;
-		no strict 'refs';
-		*{"$caller\::$name"} = \%SIG_PENDING;
-	}
-	return;
-}
-
-const my $sig_max => defined &POSIX::SIGRTMAX ? &POSIX::SIGRTMAX : 32;
-
-tie %SIG_PENDING, __PACKAGE__;
+tie %Signal::Pending, __PACKAGE__;
 
 sub TIEHASH {
 	my $class = shift;
@@ -101,16 +89,16 @@ __END__
 
 =head1 SYNOPSIS
 
-Signal::Pending is an abstraction around your process'/thread's pending signals. It can be used in combination with signal masks to handle signals in a controlled manner.
+Signal::Pending is an abstraction around your process'/thread's pending signals. It can be used in combination with signal masks to handle signals in a controlled manner. The set of pending signals is available as the global hash %Signal::Pending.
 
- use Signal::Mask 'SIG_MASK';
- use Signal::Pending 'SIG_PENDING';
+ use Signal::Mask;
+ use Signal::Pending;
  
  {
-     local $SIG_MASK{INT} = 1;
+     local $Signal::Mask{INT} = 1;
      do {
 		 something();
-     } while (not $SIG_PENDING{INT})
+     } while (not $Signal::Pending{INT})
  }
  #signal delivery gets postponed until now
 

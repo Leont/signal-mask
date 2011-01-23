@@ -3,28 +3,16 @@ package Signal::Mask;
 use strict;
 use warnings FATAL => 'all';
 
+use Config;
 use POSIX qw/SIG_BLOCK SIG_UNBLOCK SIG_SETMASK/;
 use Thread::SigMask 'sigmask';
 use IPC::Signal qw/sig_num sig_name/;
 use Carp qw/croak/;
 use Const::Fast;
 
-our %SIG_MASK;
+const my $sig_max => $Config{sig_count} - 1;
 
-sub import {
-	my ($class, $name) = @_;
-	if (defined $name) {
-		$name =~ s/ \A % //xm;
-		my $caller = caller;
-		no strict 'refs';
-		*{"$caller\::$name"} = \%SIG_MASK;
-	}
-	return;
-}
-
-const my $sig_max => defined &POSIX::SIGRTMAX ? &POSIX::SIGRTMAX : 32;
-
-tie %SIG_MASK, __PACKAGE__;
+tie %Signal::Mask, __PACKAGE__;
 
 sub TIEHASH {
 	my $class = shift;
@@ -129,12 +117,12 @@ __END__
 
 =head1 SYNOPSIS
 
-Signal::Mask is an abstraction around your process or thread signal mask. It is used to fetch and/or change the signal mask of the calling process or thread. The signal mask is the set of signals whose delivery is currently blocked for the caller.
+Signal::Mask is an abstraction around your process or thread signal mask. It is used to fetch and/or change the signal mask of the calling process or thread. The signal mask is the set of signals whose delivery is currently blocked for the caller. It is available as the global hash %Signal::Mask.
 
- use Signal::Mask 'SIG_MASK';
+ use Signal::Mask;
  
  {
-     local $SIG_MASK{INT} = 1;
+     local $Signal::Mask{INT} = 1;
      do_something();
  }
  #signal delivery gets postponed until now
