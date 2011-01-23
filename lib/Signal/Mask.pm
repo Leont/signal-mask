@@ -32,37 +32,34 @@ sub FETCH {
 	return $self->_get_status(sig_num($key));
 }
 
-sub _block_signal {
+my $block_signal = sub {
 	my ($self, $key) = @_;
 	my $num = sig_num($key);
 	croak "No such signal '$key'" if not defined $num;
-	sigmask(SIG_BLOCK, POSIX::SigSet->new($num)) or croak "Couldn't block signal: $!";
-	return;
-}
+	my $ret = POSIX::SigSet->new($num);
+	sigmask(SIG_BLOCK, POSIX::SigSet->new($num), $ret) or croak "Couldn't block signal: $!";
+	return $ret->ismember($ret);
+};
 
-sub _unblock_signal {
+my $unblock_signal = sub {
 	my ($self, $key) = @_;
 	my $num = sig_num($key);
 	croak "No such signal '$key'" if not defined $num;
-	sigmask(SIG_UNBLOCK, POSIX::SigSet->new($num)) or croak "Couldn't unblock signal: $!";
-	return;
-}
+	my $ret = POSIX::SigSet->new($num);
+	sigmask(SIG_UNBLOCK, POSIX::SigSet->new($num), $ret) or croak "Couldn't unblock signal: $!";
+	return $ret->ismember($ret);
+};
 
 sub STORE {
 	my ($self, $key, $value) = @_;
-	if ($value) {
-		$self->_block_signal($key);
-	}
-	else {
-		$self->_unblock_signal($key);
-	}
+	my $method = $value ? $block_signal : $unblock_signal;
+	$self->$method($key);
 	return;
 }
 
 sub DELETE {
 	my ($self, $key) = @_;
-	$self->STORE($key, 0);
-	return;
+	return $self->$unblock_signal($key);
 }
 
 sub CLEAR {
