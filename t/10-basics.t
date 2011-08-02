@@ -2,13 +2,17 @@
 
 use strict;
 use warnings FATAL => 'all';
-use Test::More tests => 17;
+use Test::More tests => 16;
 use Signal::Mask;
 use Signal::Pending;
 use POSIX qw/SIGUSR1 SIGUSR2/;
 
 my $counter1 = 0;
 my $counter2 = 0;
+
+my $base_masked = %Signal::Mask;
+
+diag("$base_masked signals masked before tests were run") if $base_masked;
 
 $SIG{USR1} = sub { $counter1++ };
 $SIG{USR2} = sub { $counter2++ };
@@ -18,10 +22,6 @@ is $counter2, 0, 'Counter2 starts at zero';
 
 ok kill(SIGUSR1, $$), 'Sent usr1 signal';
 
-use YAML;
-
-is %Signal::Mask, 0, 'No masked signals' or diag Dump \%Signal::Mask;
-
 is %Signal::Pending, 0, 'No pending signals';
 
 is $counter1, 1, 'Counter1 is 1 now';
@@ -30,7 +30,7 @@ is $counter2, 0, 'Counter2 is still 0';
 {
 	local $Signal::Mask{USR1} = 1;
 
-	is %Signal::Mask, 1, 'One signal masked';
+	is %Signal::Mask, 1 + $base_masked, 'One signal masked';
 
 	ok kill(SIGUSR1, $$), 'Sent usr1 signal';
 	ok kill(SIGUSR2, $$), 'Sent usr2 signal';

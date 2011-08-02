@@ -1,6 +1,7 @@
 Revision history for Signal-Mask
 
 {{$NEXT}}
+          Deal with previously masked signals in tests
 
 0.005     2011-01-24 00:21:18 Europe/Amsterdam
          BACKWARDS COMPATIBILTIY BREAK: changed exported hashes to global hashes
