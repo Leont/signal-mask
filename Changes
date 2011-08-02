@@ -1,6 +1,8 @@
 Revision history for Signal-Mask
 
 {{$NEXT}}
+
+0.006     2011-08-02 16:58:23 Europe/Amsterdam
           Deal with previously masked signals in tests
 
 0.005     2011-01-24 00:21:18 Europe/Amsterdam
