@@ -1,6 +1,7 @@
 Revision history for Signal-Mask
 
 {{$NEXT}}
+          Fix error message in Signal::Pending
 
 0.006     2011-08-02 16:58:23 Europe/Amsterdam
           Deal with previously masked signals in tests

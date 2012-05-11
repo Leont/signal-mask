@@ -33,17 +33,17 @@ sub FETCH {
 
 sub STORE {
 	my ($self, $key, $value) = @_;
-	croak 'Can\'t assign to %SIG_PENDING';
+	croak 'Can\'t assign to %Signal::Pending';
 }
 
 sub DELETE {
 	my ($self, $key) = @_;
-	croak 'Can\'t delete from %SIG_PENDING';
+	croak 'Can\'t delete from %Signal::Pending';
 }
 
 sub CLEAR {
 	my ($self) = @_;
-	croak 'Can\'t clear %SIG_PENDING';
+	croak 'Can\'t clear %Signal::Pending';
 }
 
 sub EXISTS {
