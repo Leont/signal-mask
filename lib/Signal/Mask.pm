@@ -8,9 +8,8 @@ use POSIX qw/SIG_BLOCK SIG_UNBLOCK SIG_SETMASK/;
 use Thread::SigMask 'sigmask';
 use IPC::Signal qw/sig_num sig_name/;
 use Carp qw/croak/;
-use Const::Fast;
 
-const my $sig_max => $Config{sig_count} - 1;
+my $sig_max = $Config{sig_count} - 1;
 
 tie %Signal::Mask, __PACKAGE__;
 

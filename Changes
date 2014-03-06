@@ -1,6 +1,7 @@
 Revision history for Signal-Mask
 
 {{$NEXT}}
+          Drop dependency on Const::Fast
           Fix error message in Signal::Pending
           Fix descriptions
 

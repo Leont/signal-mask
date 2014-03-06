@@ -7,9 +7,8 @@ use Config;
 use POSIX qw/sigpending/;
 use IPC::Signal qw/sig_num sig_name/;
 use Carp qw/croak/;
-use Const::Fast;
 
-const my $sig_max => $Config{sig_count} - 1;
+my $sig_max = $Config{sig_count} - 1;
 
 tie %Signal::Pending, __PACKAGE__;
 
