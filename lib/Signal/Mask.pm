@@ -110,11 +110,7 @@ sub DESTROY {
 
 # ABSTRACT: Signal masks made easy
 
-__END__
-
 =head1 SYNOPSIS
-
-Signal::Mask is an abstraction around your process or thread signal mask. It is used to fetch and/or change the signal mask of the calling process or thread. The signal mask is the set of signals whose delivery is currently blocked for the caller. It is available as the global hash %Signal::Mask.
 
  use Signal::Mask;
  
@@ -123,5 +119,9 @@ Signal::Mask is an abstraction around your process or thread signal mask. It is 
      do_something();
  }
  #signal delivery gets postponed until now
+
+=head1 DESCRIPTION
+
+Signal::Mask is an abstraction around your process or thread signal mask. It is used to fetch and/or change the signal mask of the calling process or thread. The signal mask is the set of signals whose delivery is currently blocked for the caller. It is available as the global hash %Signal::Mask.
 
 =for Pod::Coverage SCALAR

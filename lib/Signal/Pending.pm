@@ -85,11 +85,7 @@ sub DESTROY {
 
 # ABSTRACT: Signal pending status made easy
 
-__END__
-
 =head1 SYNOPSIS
-
-Signal::Pending is an abstraction around your process'/thread's pending signals. It can be used in combination with signal masks to handle signals in a controlled manner. The set of pending signals is available as the global hash %Signal::Pending.
 
  use Signal::Mask;
  use Signal::Pending;
@@ -101,5 +97,9 @@ Signal::Pending is an abstraction around your process'/thread's pending signals.
      } while (not $Signal::Pending{INT})
  }
  #signal delivery gets postponed until now
+
+=head1 DESCRIPTION
+
+Signal::Pending is an abstraction around your process'/thread's pending signals. It can be used in combination with signal masks to handle signals in a controlled manner. The set of pending signals is available as the global hash %Signal::Pending.
 
 =for Pod::Coverage SCALAR
