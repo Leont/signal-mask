@@ -35,9 +35,8 @@ my $block_signal = sub {
 	my ($self, $key) = @_;
 	my $num = sig_num($key);
 	croak "No such signal '$key'" if not defined $num;
-	my $ret = POSIX::SigSet->new($num);
-	sigmask(SIG_BLOCK, POSIX::SigSet->new($num), $ret) or croak "Couldn't block signal: $!";
-	return $ret->ismember($ret);
+	sigmask(SIG_BLOCK, POSIX::SigSet->new($num)) or croak "Couldn't block signal: $!";
+	return;
 };
 
 my $unblock_signal = sub {
@@ -46,7 +45,7 @@ my $unblock_signal = sub {
 	croak "No such signal '$key'" if not defined $num;
 	my $ret = POSIX::SigSet->new($num);
 	sigmask(SIG_UNBLOCK, POSIX::SigSet->new($num), $ret) or croak "Couldn't unblock signal: $!";
-	return $ret->ismember($ret);
+	return $ret->ismember($num);
 };
 
 sub STORE {
