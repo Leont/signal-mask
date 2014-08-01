@@ -2,6 +2,7 @@ Revision history for Signal-Mask
 
 {{$NEXT}}
           Fix return values of block/unblock_signals
+          Make dependency on Thread::SigMask optional
 
 0.007     2014-03-07 00:48:17CET+0100 Europe/Amsterdam
           Drop dependency on Const::Fast

@@ -5,7 +5,15 @@ use warnings FATAL => 'all';
 
 use Config;
 use POSIX qw/SIG_BLOCK SIG_UNBLOCK SIG_SETMASK/;
-use Thread::SigMask 'sigmask';
+BEGIN {
+	if (eval { require Thread::SigMask }) {
+		*sigmask = \&Thread::SigMask::sigmask;
+	}
+	else {
+		require POSIX;
+		*sigmask = \&POSIX::sigprocmask;
+	}
+}
 use IPC::Signal qw/sig_num sig_name/;
 use Carp qw/croak/;
 
@@ -122,4 +130,3 @@ sub DESTROY {
 
 Signal::Mask is an abstraction around your process or thread signal mask. It is used to fetch and/or change the signal mask of the calling process or thread. The signal mask is the set of signals whose delivery is currently blocked for the caller. It is available as the global hash %Signal::Mask.
 
-=for Pod::Coverage SCALAR
