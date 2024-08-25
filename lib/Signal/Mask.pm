@@ -19,7 +19,10 @@ use Carp qw/croak/;
 
 my $sig_max = $Config{sig_count} - 1;
 
-tie %Signal::Mask, __PACKAGE__;
+{
+  no warnings 'once';
+  tie %Signal::Mask, __PACKAGE__;
+}
 
 sub TIEHASH {
 	my $class = shift;

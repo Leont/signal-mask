@@ -10,7 +10,10 @@ use Carp qw/croak/;
 
 my $sig_max = $Config{sig_count} - 1;
 
-tie %Signal::Pending, __PACKAGE__;
+{
+  no warnings 'once';
+  tie %Signal::Pending, __PACKAGE__;
+}
 
 sub TIEHASH {
 	my $class = shift;
